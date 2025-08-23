@@ -1,0 +1,20 @@
+.taskCard{
+    background: #333;
+    width: 500px;
+    margin: 0 auto 10px;
+    padding: 10px;
+    text-align: left;
+    border-radius: 16px;
+    min-height: 60px;
+}
+
+.taskCardCompleted{
+    background: #555;
+    width: 500px;
+    margin: 0 auto 10px;
+    padding: 10px;
+    text-align: left;
+    border-radius: 16px;
+    min-height: 60px;
+    opacity: .3;
+}
