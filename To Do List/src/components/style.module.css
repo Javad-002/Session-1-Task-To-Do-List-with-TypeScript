@@ -6,6 +6,7 @@
   text-align: left;
   border-radius: 16px;
   min-height: 60px;
+  position: relative;
 }
 
 .taskCardCompleted {
@@ -17,16 +18,19 @@
   border-radius: 16px;
   min-height: 60px;
   opacity: 0.3;
+  position: relative;
+
 }
 
 .addTaskForm {
   padding-top: 50px;
   width: 500px;
-  height: 300px;
   background: #3e3e3e;
   border-radius: 18px;
   position: fixed;
   display: none;
+  padding: 15px;
+  z-index: 999;
 }
 
 .titles {
