@@ -1,10 +1,14 @@
 import { useRef, useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import style from "./style.module.css";
+
 interface task {
   id: number;
   title: string;
   isCompleted: boolean;
   description?: string;
+  priority?: "high" | "medium" | "low";
 }
 
 const GenerateId = (tasks: task[]): number => {
@@ -28,29 +32,25 @@ function toggleTaskStatus(tasks: task[], id: number): task[] {
   );
 }
 
+const TaskSchema = Yup.object().shape({
+  title: Yup.string().required("عنوان الزامی است"),
+});
+
 const TodoList = () => {
-  const [title, setTitle] = useState<string>("");
-  const [describe, setDescribe] = useState<string>("");
   const [myTasks, setMyTasks] = useState<task[]>([]);
-
   const taskForm = useRef<HTMLDivElement>(null);
-
-  const handleAddTask = () => {
-    const updatedTasks = addTask(myTasks, title, describe);
-    setMyTasks(updatedTasks);
-  };
 
   const closeForm = () => {
     if (taskForm.current) {
-      taskForm.current.style.display = 'none';
+      taskForm.current.style.display = "none";
     }
   };
 
   const openForm = () => {
     if (taskForm.current) {
-      taskForm.current.style.display = 'block';
+      taskForm.current.style.display = "block";
     }
-  }
+  };
 
   return (
     <div className={style.continer}>
@@ -58,38 +58,77 @@ const TodoList = () => {
         <h6 onClick={closeForm} className={style.closeBtn}>
           X
         </h6>
-        <h3 className={style.titles}>Title</h3>
-        <input
-          className={style.inputs}
-          placeholder="Title..."
-          onChange={(e) => {
-            setTitle(e.target.value);
+
+        <Formik
+          initialValues={{ title: "", description: "" }}
+          validationSchema={TaskSchema}
+          onSubmit={(values, { resetForm }) => {
+            const updatedTasks = addTask(
+              myTasks,
+              values.title,
+              values.description
+            );
+            setMyTasks(updatedTasks);
+            resetForm();
+            closeForm();
           }}
-          type="text"
-        />
-        <h3 className={style.titles}>Description</h3>
-        <input
-          className={style.inputs}
-          placeholder="Description..."
-          onChange={(e) => {
-            setDescribe(e.target.value);
-          }}
-          type="text"
-        />
-        <button className={style.button} onClick={handleAddTask}>
-          Add
-        </button>
+        >
+          {({ isSubmitting }) => (
+            <Form className="flex flex-col gap-2">
+              <h3 className={style.titles}>Title</h3>
+              <Field
+                name="title"
+                placeholder="Title..."
+                className={style.inputs}
+              />
+              <ErrorMessage
+                name="title"
+                component="div"
+                className="text-red-500 text-sm"
+              />
+
+              <h3 className={style.titles}>Description</h3>
+              <Field
+                name="description"
+                placeholder="Description..."
+                className={style.inputs}
+              />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="text-red-500 text-sm"
+              />
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={style.button}
+              >
+                Add
+              </button>
+            </Form>
+          )}
+        </Formik>
       </div>
 
       <div>
-        <h3 style={{width:"500px"}}>To Do List</h3>
-        <div style={{background:"gray", width:"100%", borderRadius:"26px",marginBottom:"20px"}}>
-          <button onClick={openForm} className={style.openBtn}>+</button>
+        <h3 style={{ width: "500px" }}>To Do List</h3>
+        <div
+          style={{
+            background: "gray",
+            width: "100%",
+            borderRadius: "26px",
+            marginBottom: "20px",
+          }}
+        >
+          <button onClick={openForm} className={style.openBtn}>
+            +
+          </button>
         </div>
         {myTasks.map((task) => (
           <div
             className={
-              task.isCompleted == false
+              task.isCompleted === false
                 ? style.taskCard
                 : style.taskCardCompleted
             }
@@ -98,7 +137,7 @@ const TodoList = () => {
             <h4 style={{ margin: 0 }}>title: {task.title}</h4>
             <h5 style={{ margin: 0 }}>describe: {task.description}</h5>
             <h4 style={{ margin: 0, display: "inline" }}>
-              status: {task.isCompleted == true ? "Completed" : "Not Completed"}
+              status: {task.isCompleted ? "Completed" : "Not Completed"}
             </h4>
             <input
               onChange={() => {
