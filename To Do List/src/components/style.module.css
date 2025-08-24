@@ -26,6 +26,7 @@
   background: #3e3e3e;
   border-radius: 18px;
   position: fixed;
+  display: none;
 }
 
 .titles {
