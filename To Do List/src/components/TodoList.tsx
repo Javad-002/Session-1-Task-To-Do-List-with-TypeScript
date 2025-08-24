@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import style from "./style.module.css";
 
-interface task {
+interface Task {
   id: number;
   title: string;
   isCompleted: boolean;
@@ -13,25 +13,25 @@ interface task {
 
 type Priority = "high" | "medium" | "low" | "none";
 
-const priorityOrder: Record<task["priority"], number> = {
+const priorityOrder: Record<Task["priority"], number> = {
   high: 1,
   medium: 2,
   low: 3,
   none: 4,
 };
 
-const GenerateId = (tasks: task[]): number => {
+const GenerateId = (tasks: Task[]): number => {
   if (tasks.length === 0) return 1;
   return tasks.reduce((max, t) => Math.max(max, t.id), tasks[0].id) + 1;
 };
 
 const addTask = (
-  tasks: task[],
+  tasks: Task[],
   title: string,
   description: string,
   priority: Priority
-): task[] => {
-  const newTask: task = {
+): Task[] => {
+  const newTask: Task = {
     id: GenerateId(tasks),
     title,
     isCompleted: false,
@@ -41,7 +41,7 @@ const addTask = (
   return [...tasks, newTask];
 };
 
-function toggleTaskStatus(tasks: task[], id: number): task[] {
+function toggleTaskStatus(tasks: Task[], id: number): Task[] {
   return tasks.map((task) =>
     task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
   );
@@ -52,7 +52,7 @@ const TaskSchema = Yup.object().shape({
 });
 
 const TodoList = () => {
-  const [myTasks, setMyTasks] = useState<task[]>([]);
+  const [myTasks, setMyTasks] = useState<Task[]>([]);
   const taskForm = useRef<HTMLDivElement>(null);
 
   const closeForm = () => {
